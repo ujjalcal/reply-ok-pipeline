@@ -64,5 +64,6 @@ A fresh run uses 9 agents and about 615k tokens. Almost all of that is each agen
 | `.claude/workflows/reply-ok-pipeline.js` | The final workflow |
 | `examples/01-single-agent.js` | First step: one agent replies OK |
 | `examples/02-three-parallel.js` | Second step: three agents in parallel |
+| `examples/03-nested-workflow.js` | Runs `reply-ok-pipeline` as a nested workflow with `workflow()`, then reports on its result |
 | `SESSION.md` | How the workflow was built, run by run, and what each run showed |
 | `ANALYSIS.md` | Running it by name from a fresh session, and why that didn't need ultracode |

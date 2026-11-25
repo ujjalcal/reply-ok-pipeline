@@ -28,8 +28,18 @@ This records the Claude Code session in which the workflow was built, one reques
 | 20 | Run it by name | Name now found | 9 (9) | ~615k | 3/3 |
 | 21 | Delete test copy, then the `/root` copy, run by name again | Ran from the `/home/user` copy (script identical) | 9 (9) | ~615k | 3/3 |
 | 22 | Delete the named workflow, run by name to confirm it fails | It didn't fail; stopped after 2 agents | 2 (2) | ~135k | Still runnable by name |
+| 23 | Push to GitHub and document the session | Restored the final script from the session's run records; wrote README and this log; committed locally | – | – | Committed; push blocked (below) |
+| 24 | Push to the new repo | Connected `ujjalcal/reply-ok-pipeline`, pushed `main` | – | – | Pushed |
+| 25 | Run it by name from the repo | Named run; script that ran was identical to the repo's copy | 9 (9) | ~615k | 3/3 |
 
-Roughly 3.7M agent tokens in total. The six runs that started fresh (1, 2, 3, 17, 20, 21) account for about 2.6M of it.
+Roughly 4.3M agent tokens in total. The seven runs that started fresh (1, 2, 3, 17, 20, 21, 25) account for about 3.2M of it.
+
+## Getting it onto GitHub
+
+- **A session can't create repositories.** Creating `ujjalcal/reply-ok-pipeline` through the GitHub API was refused, because a cloud session may only use repositories that already exist and are connected to it. The repo had to be created by hand on github.com.
+- **The new repo wasn't visible at first.** Right after it was created, connecting it failed and it didn't appear in the session's repository list. On the next try it connected. The cause isn't certain: either the Claude GitHub App's repository access was updated, or GitHub needed a moment to catch up.
+- **The push** went to an empty remote, so there was nothing to merge. Git printed `push negotiation failed`, which is harmless here; `main` on GitHub matched the local commit.
+- **Running by name after the push** used a script identical to the repo's copy. That doesn't prove the repo's copy was used, because the session still held its own identical copy from step 20. Only a new session started from the repo would show that.
 
 ## Problems found by reading the code
 
@@ -60,3 +70,4 @@ After step 15 the tests all passed, but reading the script found two issues that
 - A workflow saved mid-session wasn't found by name at first, but was a few minutes later. (I had said they're only read at session start; that was wrong.)
 - Once found, the session keeps its own copy. Deleting the file didn't stop it running by name. (I had said it would fail; that was wrong too, and testing it cost about 135k tokens before the run was stopped.)
 - Nothing in a cloud session's container outlasts the session. A workflow worth keeping belongs in a repository, which is why this one is here.
+- A script deleted from disk can still be recovered from the session's own run records, which keep a copy of every script that ran. That's how the final version got into this repo.

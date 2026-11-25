@@ -54,6 +54,19 @@ The difference the user noticed was in the session, not the workflow. In the ori
 2. **"Plugins only add context" overstated it.** The sessions also differed in MCP servers, agent types and how they were started. Attributing the token gap to plugins alone would need testing one difference at a time.
 3. **Ultracode did more than set a default.** It also added repeated reminders to use the Workflow tool, which pushed the session toward workflows even for questions like this one.
 
+## Did workflows need anything beyond Claude Code?
+
+No. There was no tmux or other terminal multiplexer, no separate processes, no job queue and no external storage. Workflows run inside Claude Code itself.
+
+- **Running in the background is built in.** The Workflow tool starts the run and returns straight away, and Claude Code sends a notification when it finishes. Nothing had to keep a terminal open or poll for results. When a run was stopped, Claude Code reported it as a `local_workflow` task, meaning one run by the Claude Code process itself.
+- **Running agents at the same time is built in.** Agents ran side by side through `parallel()` and `pipeline()` in the script, with Claude Code running several agents at once up to its own limit. No extra terminals were opened and no processes were started or managed by hand.
+- **Watching progress is built in.** `/workflows` shows live progress, and each run keeps its own records under `~/.claude/projects/…`, including a copy of the script and every agent's result.
+- **Resuming is built in.** Reusing saved results with `resumeFromRunId` is part of the Workflow tool; nothing external stores them.
+
+The one requirement is that the Claude Code session stays alive while a workflow runs, because the run lives inside that session. If the session ends partway through, the run stops. Resuming only works within the same session, so a new session has to start the workflow again. Here every run finished in seconds, so this never came up.
+
+The second session wasn't needed for workflows either. It was just a clean place to test running the workflow by name.
+
 ## Open questions
 
 - Do workflow agents inherit the session's plugin skills, MCP tool definitions and agent-type listings, and how much of the ~2.4k per agent comes from each?

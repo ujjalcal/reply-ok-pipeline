@@ -65,3 +65,4 @@ A fresh run uses 9 agents and about 615k tokens. Almost all of that is each agen
 | `examples/01-single-agent.js` | First step: one agent replies OK |
 | `examples/02-three-parallel.js` | Second step: three agents in parallel |
 | `SESSION.md` | How the workflow was built, run by run, and what each run showed |
+| `ANALYSIS.md` | Running it by name from a fresh session, and why that didn't need ultracode |
